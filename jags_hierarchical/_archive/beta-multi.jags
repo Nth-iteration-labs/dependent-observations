@@ -1,0 +1,25 @@
+model {
+	# Model for lowest level
+	for (i in 1: N){
+		y[i] ~ dbern(p.hat[i])									# Observations are bernoulli p.j
+	  	p.hat[i] <- (a[id[i]]) / (b[id[i]] + a[id[i]] )			# MAP from beta w. 1,1 prior
+	}
+	
+	# Model for upper level including priors...
+	for (j in 1: J){
+	
+		# Beta a,b for each
+		a[j] <- u[j] * M[j]
+		b[j] <- M[j] - a[j]
+		
+		# From priors using a beta
+		M[j] <- M.int[j]+1
+		
+		u[j] ~ dbeta(1,1)
+		M.int[j] ~ dpois(1)
+		
+		# Store p.j to obtain draws
+		p[j] <- a[j]/(a[j]+b[j])
+	}
+	
+}

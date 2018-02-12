@@ -1,0 +1,31 @@
+model {
+
+	# This is really just a simple logit extension of the 
+	# hierarchical normal-normal model (multilevel.jags)
+
+	# Level 1
+    # N observations
+    for (i in 1:N) {
+        y[i] ~ dbern(p[i])
+        logit(p[i]) <- mu + u[id[i]] 
+    }
+
+	# Level 2
+    # J groups
+    for (j in 1:J) {
+        u[j] ~ dnorm(0,tau.a)
+		
+		# Logging just auxiliary, not necessary:
+		# But easy for posterior sampling
+		logit(z[j]) <- mu+u[j]
+    }
+
+	# Prior for mu
+	mu ~ dnorm(0,.0001)
+	
+	# Prior for upper level
+	tau.a <- pow(sigma.a, -2)
+	sigma.a ~ dunif(0,100)
+	
+
+}

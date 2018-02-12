@@ -1,0 +1,24 @@
+model {
+
+	# Model for lowest level
+	for (i in 1: N){
+		y[i] ~ dnorm (y.hat[i], tau.y)
+	  	y.hat[i] <- mu + a[id[i]]
+	}
+	
+	# Model for upper level
+	for (j in 1: J){
+		a[j] ~ dnorm(0, tau.a)
+	}
+	
+	# Prior for mu
+	mu ~ dnorm(0,.0001)
+	
+	# Prior for error:
+	tau.y <- pow(sigma.y, -2)
+	sigma.y ~ dunif(0, 100)
+	
+	# Prior for upper level
+	tau.a <- pow(sigma.a, -2)
+	sigma.a ~ dunif(0,100)
+}
