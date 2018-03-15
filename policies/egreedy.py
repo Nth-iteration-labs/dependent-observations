@@ -10,7 +10,7 @@ class EGreedyUnpooled(object):
         self.n_subjects = n_subjects
         self.epsilon = epsilon
         self.count = 0
-        self.probs = [{'A' : 0, 'B' : 0, 'n' : 0} for i in range(self.n_subjects)]
+        self.probs = [{'A' : 0, 'B' : 0, 'n' : {'A' : 0, 'B' : 0}} for i in range(self.n_subjects)]
         self.choices = ['A','B']
 
     def count_update(self):
@@ -37,8 +37,9 @@ class EGreedyUnpooled(object):
         # Update proportion
         self.count_update()
         subject = context['subject']
-        self.probs[subject]['n'] = int(self.probs[subject]['n']) + 1
-        self.probs[subject][action] = float(self.probs[subject][action]) + ((reward - float(self.probs[subject][action])) / int(self.probs[subject]['n']))
+        self.probs[subject]['n'][action] = int(self.probs[subject]['n'][action]) + 1
+        self.probs[subject][action] = float(self.probs[subject][action]) + ((reward - float(self.probs[subject][action])) / int(self.probs[subject]['n'][action]))
+        #print("Subject: {} data: {}".format(subject,self.probs[subject]))
 
 class EGreedyPooled(object):
     """ Completely pooled EGreedy
@@ -49,7 +50,7 @@ class EGreedyPooled(object):
         self.type = "Complete"
         self.n_subjects = n_subjects
         self.epsilon = epsilon
-        self.probs = {'A' : 0, 'B' : 0, 'n' : 0}
+        self.probs = {'A' : 0, 'B' : 0, 'n' : {'A' : 0, 'B' : 0}}
         self.choices = ['A','B']
         
     def print_coefs(self):
@@ -70,8 +71,9 @@ class EGreedyPooled(object):
     
     def reward(self, action, context, reward):
         # Update proportion
-        self.probs['n'] = int(self.probs['n']) + 1
-        self.probs[action] = float(self.probs[action]) + ((reward - float(self.probs[action])) / int(self.probs['n']))
+        self.probs['n'][action] = int(self.probs['n'][action]) + 1
+        self.probs[action] = float(self.probs[action]) + ((reward - float(self.probs[action])) / int(self.probs['n'][action]))
+        #print(self.probs)
         
 class EGreedyPartially(object):
     """ Partially (un)pooled EGreedy
@@ -83,8 +85,8 @@ class EGreedyPartially(object):
         self.n_subjects = n_subjects
         self.epsilon = epsilon
         self.count = 0
-        self.probs = [{'A' : 0, 'B' : 0, 'n' : 1} for i in range(self.n_subjects)]
-        self.probs_mean = {'A' : 0, 'B' : 0, 'n' : 0}
+        self.probs = [{'A' : 0, 'B' : 0, 'n' : {'A' : 1, 'B' : 1}} for i in range(self.n_subjects)]
+        self.probs_mean = {'A' : 0, 'B' : 0, 'n' : {'A' : 0, 'B' : 0}}
         self.choices = ['A','B']
 
     def count_update(self):
@@ -102,7 +104,7 @@ class EGreedyPartially(object):
         # Else we take a maximum
         else:
             # Calculate p_a_i_hat and p_b_i_hat
-            beta = 1/np.sqrt(self.probs[subject]['n'])
+            beta = 1/np.sqrt(self.probs[subject]['n']['A'] + self.probs[subject]['n']['B'])
             p_a_mean = self.probs_mean['A'] #sum(d['A'] for d in self.probs) / len(self.probs)
             p_b_mean = self.probs_mean['B'] #sum(d['B'] for d in self.probs) / len(self.probs)
             p_a_hat = beta * p_a_mean + (1-beta) * self.probs[subject]['A']
@@ -117,8 +119,8 @@ class EGreedyPartially(object):
         # Update proportion
         self.count_update()
         subject = context['subject']
-        self.probs[subject]['n'] = int(self.probs[subject]['n']) + 1
-        self.probs[subject][action] = float(self.probs[subject][action]) + ((reward - float(self.probs[subject][action])) / int(self.probs[subject]['n']))
-        self.probs_mean['n'] = int(self.probs_mean['n']) + 1
-        self.probs_mean[action] = float(self.probs_mean[action]) + ((reward - float(self.probs_mean[action])) / int(self.probs_mean['n']))
+        self.probs[subject]['n'][action] = int(self.probs[subject]['n'][action]) + 1
+        self.probs[subject][action] = float(self.probs[subject][action]) + ((reward - float(self.probs[subject][action])) / int(self.probs[subject]['n'][action]))
+        self.probs_mean['n'][action] = int(self.probs_mean['n'][action]) + 1
+        self.probs_mean[action] = float(self.probs_mean[action]) + ((reward - float(self.probs_mean[action])) / int(self.probs_mean['n'][action]))
     

@@ -1,5 +1,9 @@
 import numpy as np
 
+"""
+NOTE: Make sure that you use n_a's and n_b's when updating the proportions!
+"""
+
 class EFirstUnpooled(object):
     """ Completely unpooled EFirst
     
