@@ -25,7 +25,7 @@ class EFirstUnpooled(object):
         
     def action(self, context):
         subject = context['subject']
-        if self.count <= self.epsilon:
+        if self.probs[subject]['n'] <= self.epsilon:
             # Random sample
             return self.choices[np.random.binomial(1,0.5)]
         else:
@@ -75,8 +75,6 @@ class EFirstPooled(object):
         self.probs['n'] = int(self.probs['n']) + 1
         self.probs[action] = float(self.probs[action]) + ((reward - float(self.probs[action])) / int(self.probs['n']))
 
-# TODO Partially pooled
-
 class EFirstPartially(object):
     """ Partially pooled EFirst
     
@@ -102,7 +100,7 @@ class EFirstPartially(object):
         
     def action(self, context):
         subject = context['subject']
-        if self.count <= self.epsilon:
+        if self.probs[subject]['n'] <= self.epsilon:
             # Random sample
             return self.choices[np.random.binomial(1,0.5)]
         else:

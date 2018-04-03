@@ -1,7 +1,9 @@
 import numpy as np
 import policies.efirst as ef
+import policies.efirst_person as efp
 import policies.egreedy as eg
 import policies.ucb as ucb
+import policies.thompson as thompson
 import bandits.bernoullibandit as bb
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -49,7 +51,7 @@ def sim_run(bandit, policy, N, n_subjects):
 N = 5000
 # Number of expected iterations per subject
 # Do runs for {5, 10, 50, 100}
-n_j = 10
+n_j = 50
 # Number of subjects
 n_subjects = int(N / n_j)
 # For each policy, run the sim_run function 1000 times and plot it.
@@ -57,8 +59,10 @@ iterations = 1000
 
 # List of policie to loop over
 #policies = [ef.EFirstPooled, ef.EFirstUnpooled, ef.EFirstPartially]
+#policies = [efp.EFirstPooled, efp.EFirstUnpooled, efp.EFirstPartially]
 #policies = [eg.EGreedyPooled, eg.EGreedyUnpooled, eg.EGreedyPartially]
 policies = [ucb.UCBPooled, ucb.UCBUnpooled, ucb.UCBPartially]
+#policies = [thompson.ThompPooled, thompson.ThompUnpooled]
 # Bandit
 # Do with alpha=beta=5, and alpha=beta=10
 theta_a = [1.5,1.5]#[2,5]
@@ -80,9 +84,10 @@ for p in policies:
         bandit = bb.BernoulliBandit(n_subjects, theta_a, theta_b)
         #print("Iteration: {}, Policy: {}".format(i,p))
         # In each loop, initialize the policy, such that the parameters are reset
-        #policy = p(n_subjects=n_subjects,epsilon=50) #For EFirst
+        #policy = p(n_subjects=n_subjects,epsilon=500) #For EFirst
+        #policy = p(n_subjects=n_subjects,epsilon=(n_j / 5)) #For EFirst Personal
         #policy = p(n_subjects=n_subjects,epsilon=0.1) #For Egreedy
-        policy = p(n_subjects=n_subjects) # For UCB
+        policy = p(n_subjects=n_subjects) # For UCB and Thompson sampling
         # Retrieve the cum_reward
         cum_reward, cum_reward_oracle = sim_run(bandit=bandit,policy=policy,N=N,n_subjects=n_subjects)
         # Put it in a list
