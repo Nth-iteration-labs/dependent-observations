@@ -55,20 +55,20 @@ n_j = 10
 # Number of subjects
 n_subjects = int(N / n_j)
 # For each policy, run the sim_run function 1000 times and plot it.
-iterations = 1000
+iterations = 100
 
 # List of policie to loop over
 #policies = [ef.EFirstPooled, ef.EFirstUnpooled, ef.EFirstPartially]
 #policies = [efp.EFirstPooled, efp.EFirstUnpooled, efp.EFirstPartially]
-policies = [eg.EGreedyPooled, eg.EGreedyUnpooled, eg.EGreedyPartially]
-#policies = [ucb.UCBPooled, ucb.UCBUnpooled, ucb.UCBPartially]
+#policies = [eg.EGreedyPooled, eg.EGreedyUnpooled, eg.EGreedyPartially]
+policies = [ucb.UCBPooled, ucb.UCBUnpooled, ucb.UCBPartially]
 #policies = [thompson.ThompPooled, thompson.ThompUnpooled]
 # Bandit
 # Do with alpha=beta=5, and alpha=beta=10
-#theta_a = [1.5,1.5]#[2,5]
-#theta_b = [1.5,1.5] #[3,2]
-theta_a = [10,10]#[2,5]
-theta_b = [10,10] #[3,2]
+theta_a = [1.5,1.5]#[2,5]
+theta_b = [1.5,1.5] #[3,2]
+#theta_a = [10,10]#[2,5]
+#theta_b = [10,10] #[3,2]
 #bandit = bb.BernoulliBandit(n_subjects, theta_a, theta_b)
 
 # Initialize plotting
@@ -88,8 +88,8 @@ for p in policies:
         # In each loop, initialize the policy, such that the parameters are reset
         #policy = p(n_subjects=n_subjects,epsilon=500) #For EFirst
         #policy = p(n_subjects=n_subjects,epsilon=(n_j / 5)) #For EFirst Personal
-        policy = p(n_subjects=n_subjects,epsilon=0.1) #For Egreedy
-        #policy = p(n_subjects=n_subjects) # For UCB and Thompson sampling
+        #policy = p(n_subjects=n_subjects,epsilon=0.1) #For Egreedy
+        policy = p(n_subjects=n_subjects) # For UCB and Thompson sampling
         # Retrieve the cum_reward
         cum_reward, cum_reward_oracle = sim_run(bandit=bandit,policy=policy,N=N,n_subjects=n_subjects)
         # Put it in a list
@@ -134,5 +134,5 @@ plt.tight_layout(rect=[0, 0.03, 1, 0.95])
 plt.show()
 
 #fig.savefig('cumulative_reward_egreedy_njs_{}_N_{}_iters_{}.eps'.format(n_j,N,iterations), format='eps', bbox_extra_artists=(lgd,), bbox_inches = 'tight')
-#fig.savefig('ucbtest_nj_{}.png'.format(n_j), format='png')#, bbox_inches='tight')#, bbox_extra_artists=(lgd,))
-fig.savefig('test_high_beta.png'.format(n_j), format='png')#, bbox_inches='tight')#, bbox_extra_artists=(lgd,))
+#fig.savefig('ucbtestfullc_nj_{}.png'.format(n_j), format='png')#, bbox_inches='tight')#, bbox_extra_artists=(lgd,))
+#fig.savefig('test_high_beta.png'.format(n_j), format='png')#, bbox_inches='tight')#, bbox_extra_artists=(lgd,))

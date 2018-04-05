@@ -104,10 +104,9 @@ class UCBPartially(object):
             #Play the action j maximizing \overline{x}_j + \sqrt{2 \log t / n_j}.
             value_mean = self.probs_mean[choice]
             value = subject_value[choice]
-            p_mean = value_mean['p'] #+ np.sqrt(2*np.log(self.probs_mean['N'])/value_mean['n'])
-            p_choice = value['p'] #+ np.sqrt(2*np.log(subject_value['N'])/value['n'])
-            p_hat = (beta * p_mean + (1-beta) * p_choice) + np.sqrt(2*np.log(self.probs_mean['N'])/value_mean['n'])
-
+            p_mean = value_mean['p'] + np.sqrt(2*np.log(self.probs_mean['N'])/value_mean['n'])
+            p_choice = value['p'] + np.sqrt(2*np.log(subject_value['N'])/value['n'])
+            p_hat = (beta * p_mean + (1-beta) * p_choice) 
             if p_hat > max_val:
                 max_key = choice
                 max_val = p_hat
