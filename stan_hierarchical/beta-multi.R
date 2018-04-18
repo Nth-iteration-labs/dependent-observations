@@ -21,4 +21,4 @@ y <- as.vector(sapply(p.j, function (x) { rbinom(i, 1, x) } ) )
 dat <- list(y = y, id = id, J = J, N = N)
 
 fit <- stan(file = 'beta-multi.stan', data = dat, 
-            iter = 1000, chains = 4)
+            iter = 1001, warmup = 1000, chains = 4)
