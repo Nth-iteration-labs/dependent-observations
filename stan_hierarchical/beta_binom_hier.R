@@ -4,6 +4,11 @@
 
 #########################################################################
 
+library("rstan")
+#setwd("~/Projects/dependent-observations/stan_hierarchical")
+
+rstan_options(auto_write = TRUE)
+options(mc.cores = parallel::detectCores())
 
 ######### Initialization ###########
 
@@ -96,8 +101,8 @@ if (action == arm_a){
   l_b[userid] <- l_b[userid]+reward
   N_b <- N_b + 1
   if (N_b %% 10 == 0){
-    init_val <- list(list(theta = theta_b, kappa = kappa_b, phi = phi_b))
-    fit_b <- stan("beta_binom_hier_b.stan", data=c("J", "n_b", "l_b"), iter=20, warmup=10, init=init_val_a, chains=1, seed=1234)
+    init_val_b <- list(list(theta = theta_b, kappa = kappa_b, phi = phi_b))
+    fit_b <- stan("beta_binom_hier_b.stan", data=c("J", "n_b", "l_b"), iter=20, warmup=10, init=init_val_b, chains=1, seed=1234)
     theta_b <- summary(fit_b, pars=c("theta"))$summary[,"mean"]
     kappa_b <- summary(fit_b, pars=c("kappa"))$summary[,"mean"]
     phi_b <- summary(fit_b, pars=c("phi"))$summary[,"mean"]
