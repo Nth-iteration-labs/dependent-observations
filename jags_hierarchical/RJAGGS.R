@@ -76,10 +76,11 @@ p.j <- rbeta(J, 1,1)
 # Simulate i binary observations w. probablity p.j
 y <- as.vector(sapply(p.j, function (x) { rbinom(i, 1, x) } ) ) 
 
+ptm <- proc.time()
 ## The Buggs model
 jags <- jags.model(
-                   'beta-multi.jags',
-                   data = list('y' = y, 'J'=J, 'id'=id, 'N'=N),
+                   'beta-multi2.jags',
+                   data = list('y' = y, 'id'=id, 'N'=N),
                    n.chains = 4,
                    n.adapt = 100)
 
@@ -88,7 +89,8 @@ jags <- jags.model(
 #plot(samples)
 
 # For checking, get posterior p only and compute mean
-samples2 <- coda.samples(jags, c('p'), 10000);
+samples2 <- coda.samples(jags, c('p'), 1000);
+proc.time() - ptm
 
 # Check difference for first chain:
 colMeans(samples2[[1]]) - p.j
@@ -104,7 +106,7 @@ colMeans(samples2[[1]]) - p.j
 
 J <- 10			# Number of people
 i <- 100		# Number of observations pp
-N <- i*j		# Total number
+N <- i*J		# Total number
 
 # id vector
 id <- sapply(1:(N), function(x) { ( (x-1) %/% i)  + 1 } )
@@ -114,7 +116,7 @@ p.j <- rbeta(J, 1,1)
 
 # Simulate i binary observations w. probablity p.j
 y <- as.vector(sapply(p.j, function (x) { rbinom(i, 1, x) } ) )
-
+ptm = proc.time()
 jags <- jags.model(
                    'logit-multi.jags',
                    data = list('y' = y, 'J'=J, 'id'=id, 'N'=N),
@@ -122,8 +124,9 @@ jags <- jags.model(
                    n.adapt = 100)
 
 p.j
-samples <- coda.samples(jags, c('mu', 'u', 'z'), 10000);
-plot(samples)
+samples <- coda.samples(jags, c('mu', 'u', 'z'), 1000);
+proc.time() - ptm
+#plot(samples)
 
 # Check the z's (which are the p.j draws)
 draws <- samples[[1]][,(12:21)]
