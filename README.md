@@ -1,5 +1,7 @@
-# Contextual bandits with dependent observations
+# Bandits with dependent observations
 
-Code for replication plots of the paper "Exploiting Nested Data Structures in Contextual Multi-Armed Bandits" (submitted to Behavior Research Methods).
+Code for replication plots of the paper "Exploiting Nested Data Structures in Multi-Armed Bandits" (submitted to PLOS One).
 
-You can walk through files 1 to 4 to get to the final plots.
+Run file 2a and 2b to generate the plots for the simulation study. Do note that running these can take quite a while - especially for the partial pooling version for Thompson sampling - so use with care.
+
+Run file 3 to generate the plots for the empirical study using the supplied .csv file.
